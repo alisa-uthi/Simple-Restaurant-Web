@@ -1,0 +1,17 @@
+<h2>BOOKING TABLE</h2>
+<div>
+    <h4>Number of people</h4>
+        <% tables.forEach(table => { %> 
+            <h6 id="table<%= table.id %>">
+                Table <%= table.id %> | <%= table.seat %> seats | Status: <%= table.status %>
+            </h6>
+            <button type="button" id="table<%= table.id %>" onclick="changeTableStatus(id)">Book</button>
+        <% }) %> 
+</div>
+<script> 
+    function changeTableStatus(id){
+        $.post('/book-table/change-table-status?_method=PUT', { table_id: id }, (data) => {
+            window.location.reload()
+        })
+    }
+</script>
