@@ -6,58 +6,16 @@
         </h6>
     <% }) %> 
 </div>
-<!-- QUANTITY AND TOTAL PRICE -->
-<div>
-    <div>
-        <h5>Table <%= tables.id %></h5>
-    </div>
-    <form action="/ordered-food/<%=tables.id %>/order" method="POST">
-        <div>
-            <table>
-                <tr>
-                    <th>Food Menu</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Total</th>
-                </tr>
-                <% foods.forEach(food => { %> 
-                    <tr>
-                        <td><%= food.name %></td>
-                        <td>//food quantity</td>
-                        <td><%= food.price.parseFloat().toFixed(2) %></td>
-                        <td><% food.price.parseFloat().toFixed(2) * ||food quantity %></td>
-                    </tr>
-                <% }) %> 
-                <tr>
-                    <th>Drink Menu</th>
-                    <th>Quantity</th>
-                    <th>Unit Price</th>
-                    <th>Total</th>
-                </tr>
-                <% drinks.forEach(drink => { %> 
-                    <tr>
-                        <td><%= drink.name %></td>
-                        <td>//drink quantity</td>
-                        <td><%= drink.price.parseFloat().toFixed(2) %></td>
-                        <td><% drink.price.parseFloat().toFixed(2) * ||drink quantity %></td>
-                    </tr>
-                <% }) %> 
-                <tr>      TOTAL      </tr>
-            </table>
-        </div>
-        <div>
-            <button type="reset" name="calcel-order-btn">Cancel</button>
-            <button type="submit" name="confirm-order-btn">Confirm</button>
-            <button type="button" name="check-bill-btn">Check Bill</button>
-        </div>
-    </form>
-</div>
+
 <script>
     $(document).ready(function() {
+        // when click a particular table to order food & drink
         $("[id^='table']").click(function() {
             var table_id = $(this).attr('id')
             table_id = table_id.split('table')[1]
-            $.post(`/ordered-food/${table_id}`, { table_id: table_id })
+            $.get(`/ordered-food/${table_id}`, { table_id: table_id }, () => {
+                window.location.replace(`/ordered-food/${table_id}`)
+            })
         })
     })
 </script>

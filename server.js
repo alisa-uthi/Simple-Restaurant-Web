@@ -29,6 +29,10 @@ db.once('open', () => console.log('Connected to Mongoose'))
 app.use('/book-table', bookTableRouter)
 app.use('/ordered-food', orderedFoodRouter)
 
+// db.dropCollection('Order', (err, result) => {
+//     console.log('result = ' + result)
+// })
+
 app.listen(process.env.PORT || 8080, () => {
     console.log('Server is starting')
 })

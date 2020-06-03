@@ -5,7 +5,7 @@ const Food = require('../models/foods')
 const Drink = require('../models/drinks')
 const Order = require('../models/orders')
 
-// Ordered food route
+//Ordered food route
 route.get('/', async (req, res) => {
     try{
         const occupiedTables = await Table.find({ status: 'Occupied' })
@@ -15,23 +15,36 @@ route.get('/', async (req, res) => {
     }
 })
 
-// When customers in the table order food or drink
-route.post('/:id', async (req, res) => {
+route.get('/:id', async (req, res) => {
     try{
-        const foods = await Food.find({}).populate('Order').exec()
+        const occupiedTables = await Table.find({ status: 'Occupied' })
+        const foods = await Food.find({})
         const drinks = await Drink.find({})
-        const table = await Table.findOne({ id: req.params.id })
-        const order = await new Order({
-            table: table.id
-        })
-        res.render('orderedFood/index', {
+        const tables = await Table.find({ id: req.params.id }).populate('Order').exec()
+        //const newOrder = new Order({ table: tables[0]._id }) 
+        //await newOrder.save()
+        const order = await Order.find({ table: tables[0]._id })
+        res.render('orderedFood/foodTable', {
+            occupiedTables: occupiedTables,
             foods: foods,
             drinks: drinks,
-            tables: table,
-            orders: order
+            tables: tables
+        })
+    }catch(e){
+        console.log(e)
+        console.log('fail woiiiii')
+       // res.render('/orderedFood/index', { occupiedTables: occupiedTables })
+    }
+})
+
+route.post('/:id/order', async (req, res) => {
+    try{
+        const table = await Table.find({ id: req.params.id })
+        const orderOfTable = new Order({
+            table: table
         })
     }catch{
-        res.render('/bookTable/index')
+        console.log('fail to update order')
     }
 })
 

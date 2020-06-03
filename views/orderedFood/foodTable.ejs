@@ -1,0 +1,107 @@
+<%- include('./index') %> 
+<div>
+    <div>
+        <h5>Table <%= tables[0].id %></h5>
+    </div>
+    <form action="/ordered-food/<%= tables[0].id %>/order" method="POST">
+        <div>
+            <table>
+                <tr>
+                    <th>Food Menu</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                <% foods.forEach(food => { %>
+                    <tr class="food-row">
+                        <td><%= food.name %></td>
+                        <td class="price"><%= food.price %></td>
+                        <td><input type="number" class="food-quantity" min="0"
+                            oninput="quantityChanged('food')"></td>
+                        <td class="each-menu-total-price">0.00</td>
+                    </tr>
+                    
+                <% }) %> 
+                <tr>
+                    <th>Drink Menu</th>
+                    <th>Unit Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                <% drinks.forEach(drink => { %>  
+                    <tr class="drink-row">
+                        <td><%= drink.name %></td>
+                        <td class="price"><%= drink.price %></td>
+                        <td><input type="number" class="drink-quantity" min="0"
+                            oninput="quantityChanged('drink')"></td>
+                        <td class="each-menu-total-price">0.00</td>
+                    </tr>
+                <% }) %>  
+                <tr>
+                    <th>TOTAL</th>
+                    <th></th>
+                    <th class="total-quantity">0</th>
+                    <th class="total-price">0.00</th>
+                </tr>  
+            </table>
+        </div>
+        <div>
+            <button type="reset" name="calcel-order-btn" id="calcel-order-btn">Cancel</button>
+            <button type="submit" name="confirm-order-btn" id="confirm-order-btn">Confirm</button>
+            <button type="button" name="check-bill-btn" id="check-bill-btn">Check Bill</button>
+        </div>
+    </form>
+</div>
+<script>
+    if(document.readyState == "loading"){
+            document.addEventListener('DOMContentLoaded', quantityChanged)
+    }else{
+        quantityChanged()
+    }
+
+    var totalQuantity = 0
+    var totalPrice = 0
+
+    function quantityChanged(menuType){
+        if(menuType == 'food'){
+            var foodQuantityElements = document.getElementsByClassName('food-quantity')
+            // for(var i = 0; i < foodQuantityElements.length; i++){
+            //     var foodQuantity = foodQuantityElements[i]
+            foodQuantityElements.addEventListener('change', calculateEachMenuPrice(event))
+            // }
+        }else if(menuType == 'drink'){
+            var drinkQuantityElements = document.getElementsByClassName('drink-quantity')
+            // for(var i = 0; i < drinkQuantityElements.length; i++){
+            //     var drinkQuantity = drinkQuantityElements[i]
+            drinkQuantityElements.addEventListener('change', calculateEachMenuPrice(event))
+            // }
+        }
+        
+    }
+
+    function calculateEachMenuPrice(event){
+        var input = event.target
+        updateTotalPrice(input)
+    }
+
+    function updateTotalPrice(inputQuantityElement){
+        var RowElement = inputQuantityElement.parentElement.parentElement
+        var quantity = inputQuantityElement.value
+        var unitPriceElement = RowElement.getElementsByClassName('price')[0]
+        var unitPrice = parseFloat(unitPriceElement.textContent)
+        var eachTotalPrice = unitPrice * quantity
+        var eachTotalElement = RowElement.getElementsByClassName('each-menu-total-price')[0]
+        eachTotalElement.innerText = parseFloat(eachTotalPrice).toFixed(2)
+        totalQuantity += parseFloat(quantity)
+        totalPrice += eachTotalPrice
+        document.getElementsByClassName('total-quantity')[0].textContent = totalQuantity
+        document.getElementsByClassName('total-price')[0].innerHTML = totalPrice.toFixed(2)
+    }
+
+    // $('#confirm-order-btn').click(function() {
+    //     $.post(`/ordered-food/${table_id}/order?_method=PUT`, {
+    //         totalQuantity: totalQuantity,
+    //         totalPrice: totalPrice
+    //     })
+    // })
+</script>

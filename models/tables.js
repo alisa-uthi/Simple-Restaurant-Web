@@ -14,13 +14,9 @@ const tableSchema = mongoose.Schema({
         require: true,
         default: 'Available'
     },
-    food: {
+    order: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Food'
-    },
-    drink: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Drink'
+        ref: 'Order'
     }
 })
 

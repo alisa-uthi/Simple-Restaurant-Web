@@ -8,8 +8,11 @@ const foodSchema = mongoose.Schema({
     price: {
         type: Number,
         require: true
+    },
+    order: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order'
     }
-    
 })
 
 module.exports = mongoose.model('Food', foodSchema)
