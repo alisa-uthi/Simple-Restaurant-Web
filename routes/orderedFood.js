@@ -43,6 +43,7 @@ route.post('/:id/order', async (req, res) => {
         const orderOfTable = new Order({
             table: table
         })
+        res.send(req.body)
     }catch{
         console.log('fail to update order')
     }
