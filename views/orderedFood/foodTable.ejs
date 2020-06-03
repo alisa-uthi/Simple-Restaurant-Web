@@ -13,14 +13,15 @@
                     <th>Total</th>
                 </tr>
                 <% foods.forEach(food => { %>
-                    <tr class="food-row">
+                    <tr class="menu-row">
                         <td><%= food.name %></td>
                         <td class="price"><%= food.price %></td>
-                        <td><input type="number" class="food-quantity" min="0"
-                            oninput="quantityChanged('food')"></td>
+                        <td><input type="number" class="quantity" min="0"
+                            onkeydown="javascript: return event.keyCode === 8 ||
+                                event.keyCode === 46 ? true : !isNaN(Number(event.key))" 
+                            oninput="quantityChanged()"></td>
                         <td class="each-menu-total-price">0.00</td>
                     </tr>
-                    
                 <% }) %> 
                 <tr>
                     <th>Drink Menu</th>
@@ -28,12 +29,15 @@
                     <th>Quantity</th>
                     <th>Total</th>
                 </tr>
+                
                 <% drinks.forEach(drink => { %>  
-                    <tr class="drink-row">
+                    <tr class="menu-row">
                         <td><%= drink.name %></td>
                         <td class="price"><%= drink.price %></td>
-                        <td><input type="number" class="drink-quantity" min="0"
-                            oninput="quantityChanged('drink')"></td>
+                        <td><input type="number" class="quantity" min="0" 
+                            onkeydown="javascript: return event.keyCode === 8 ||
+                                event.keyCode === 46 ? true : !isNaN(Number(event.key))"
+                            oninput="quantityChanged()"></td>
                         <td class="each-menu-total-price">0.00</td>
                     </tr>
                 <% }) %>  
@@ -54,37 +58,25 @@
 </div>
 <script>
     if(document.readyState == "loading"){
-            document.addEventListener('DOMContentLoaded', quantityChanged)
+        document.addEventListener('DOMContentLoaded', quantityChanged)
     }else{
         quantityChanged()
     }
 
-    var totalQuantity = 0
-    var totalPrice = 0
-
-    function quantityChanged(menuType){
-        if(menuType == 'food'){
-            var foodQuantityElements = document.getElementsByClassName('food-quantity')
-            // for(var i = 0; i < foodQuantityElements.length; i++){
-            //     var foodQuantity = foodQuantityElements[i]
-            foodQuantityElements.addEventListener('change', calculateEachMenuPrice(event))
-            // }
-        }else if(menuType == 'drink'){
-            var drinkQuantityElements = document.getElementsByClassName('drink-quantity')
-            // for(var i = 0; i < drinkQuantityElements.length; i++){
-            //     var drinkQuantity = drinkQuantityElements[i]
-            drinkQuantityElements.addEventListener('change', calculateEachMenuPrice(event))
-            // }
-        }
-        
+    function quantityChanged(){
+        var quantityElements = document.getElementsByClassName('quantity')
+        quantityElements.addEventListener('change', calculateEachMenuPrice(event))
     }
 
     function calculateEachMenuPrice(event){
         var input = event.target
-        updateTotalPrice(input)
+        if(isNaN(input.value)){
+            input.value = 0
+        }
+        updateEachTotalPrice(input)
     }
 
-    function updateTotalPrice(inputQuantityElement){
+    function updateEachTotalPrice(inputQuantityElement){
         var RowElement = inputQuantityElement.parentElement.parentElement
         var quantity = inputQuantityElement.value
         var unitPriceElement = RowElement.getElementsByClassName('price')[0]
@@ -92,9 +84,23 @@
         var eachTotalPrice = unitPrice * quantity
         var eachTotalElement = RowElement.getElementsByClassName('each-menu-total-price')[0]
         eachTotalElement.innerText = parseFloat(eachTotalPrice).toFixed(2)
-        totalQuantity += parseFloat(quantity)
-        totalPrice += eachTotalPrice
-        document.getElementsByClassName('total-quantity')[0].textContent = totalQuantity
+        updateTotalPrice()
+    }
+
+    function updateTotalPrice(){
+        var menusRowElement = document.getElementsByClassName('menu-row')
+        var totalQuantity = 0
+        var totalPrice = 0
+        for(var i = 0; i < menusRowElement.length; i++){
+            var menusRow = menusRowElement[i]
+            var quantityElement = menusRow.getElementsByClassName('quantity')[0]
+            var quantity = quantityElement.value
+            var unitPriceElement = menusRow.getElementsByClassName('price')[0]
+            var unitPrice = parseFloat(unitPriceElement.textContent)
+            totalPrice += unitPrice * quantity
+            totalQuantity = parseFloat(totalQuantity) + (quantity * 1) 
+        }
+        document.getElementsByClassName('total-quantity')[0].innerHTML = totalQuantity
         document.getElementsByClassName('total-price')[0].innerHTML = totalPrice.toFixed(2)
     }
 
