@@ -9,6 +9,14 @@ const drinkSchema = mongoose.Schema({
         type: Number,
         require: true
     },
+    orderQuantity: {
+        type: Number,
+        default: 0
+    },
+    orderTotalPrice: {
+        type: Number,
+        default: 0
+    },
     order: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'

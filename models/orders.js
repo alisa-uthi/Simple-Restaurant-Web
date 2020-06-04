@@ -10,25 +10,19 @@ const orderSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Food'
     },
-    foodQuantity: {
-        type: Number,
-        default: 0
-    },
     drink: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Drink'
     },
-    drinkQuantity: {
-        type: Number,
-        default: 0
-    },
     totalQuantity: {
         type: Number,
-        default: 0
+        default: 0,
+        require: true
     },
     totalPrice: {
         type: Number,
-        default: 0
+        default: 0,
+        require: true
     }
 })
 

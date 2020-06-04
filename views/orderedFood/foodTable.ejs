@@ -85,9 +85,11 @@
         updateTotalPrice()
     }
 
-    var totalQuantity = 0
-    var totalPrice = 0
+    var getTotalQuantity, getTotalPrice
+
     function updateTotalPrice(){
+        var totalQuantity = 0
+        var totalPrice = 0
         var numberOfFood = 7
         var menuType
         var menusRowElement = document.getElementsByClassName('menu-row')
@@ -105,18 +107,20 @@
             menuType = i < numberOfFood ? 'food' : 'drink'
 
             if(eachTotalPrice > 0)
-                updateDataToSend(menuType, menuName, quantity, eachTotalPrice)
+                updateDataToSend(menuType, menuName, unitPrice, quantity, eachTotalPrice)
         }
-
+        getTotalPrice = totalPrice
+        getTotalQuantity = totalQuantity
         document.getElementsByClassName('total-quantity')[0].innerHTML = totalQuantity
         document.getElementsByClassName('total-price')[0].innerHTML = totalPrice.toFixed(2)
     }
 
     var listOfOrder = []
-    function updateDataToSend(type, name, quantity, eachTotalPrice){
+    function updateDataToSend(type, name, unitPrice, quantity, eachTotalPrice){
         listOfOrder.push({ 
             type: type,
             name: name,
+            price: unitPrice,
             quantity: quantity,
             totalPrice: eachTotalPrice
         })
@@ -132,8 +136,8 @@
                                       })
             $.post(`/ordered-food/${table_id}/order`, {
                 listOfOrder: uniqueListOfOrder,
-                totalPrice: totalPrice,
-                totalQuantity: totalQuantity
+                totalPrice: getTotalPrice,
+                totalQuantity: getTotalQuantity
             })
         })
     })
