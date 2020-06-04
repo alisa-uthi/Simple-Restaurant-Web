@@ -30,8 +30,7 @@ route.get('/:id', async (req, res) => {
             drinks: drinks,
             tables: tables
         })
-    }catch(e){
-        console.log(e)
+    }catch{
         console.log('fail woiiiii')
        // res.render('/orderedFood/index', { occupiedTables: occupiedTables })
     }
@@ -39,11 +38,12 @@ route.get('/:id', async (req, res) => {
 
 route.post('/:id/order', async (req, res) => {
     try{
+        console.log(req.body)
         const table = await Table.find({ id: req.params.id })
-        const orderOfTable = new Order({
-            table: table
-        })
-        res.send(req.body)
+        // const orderOfTable = new Order({
+        //     table: table
+        // })
+        // res.send(req.body)
     }catch{
         console.log('fail to update order')
     }

@@ -1,60 +1,58 @@
 <%- include('./index') %> 
 <div>
     <div>
-        <h5>Table <%= tables[0].id %></h5>
+        <h5 id="table-id">Table <%= tables[0].id %></h5>
     </div>
-    <form action="/ordered-food/<%= tables[0].id %>/order" method="POST">
-        <div>
-            <table>
-                <tr>
-                    <th>Food Menu</th>
-                    <th>Unit Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
+    <div>
+        <table>
+            <tr>
+                <th>Food Menu</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+            <% foods.forEach(food => { %>
+                <tr class="menu-row">
+                    <td><%= food.name %></td>
+                    <td class="price"><%= food.price %></td>
+                    <td><input type="number" class="quantity" min="0" name="<%= food.name %>"
+                        onkeydown="javascript: return event.keyCode === 8 ||
+                                    event.keyCode === 46 ? true : !isNaN(Number(event.key))" 
+                        oninput="quantityChanged()"></td>
+                    <td class="each-menu-total-price">0.00</td>
                 </tr>
-                <% foods.forEach(food => { %>
-                    <tr class="menu-row">
-                        <td><%= food.name %></td>
-                        <td class="price"><%= food.price %></td>
-                        <td><input type="number" class="quantity" min="0" name="<%= food.name %>"
-                            onkeydown="javascript: return event.keyCode === 8 ||
-                                event.keyCode === 46 ? true : !isNaN(Number(event.key))" 
-                            oninput="quantityChanged()"></td>
-                        <td class="each-menu-total-price">0.00</td>
-                    </tr>
-                <% }) %> 
-                <tr>
-                    <th>Drink Menu</th>
-                    <th>Unit Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
+            <% }) %> 
+            <tr>
+                <th>Drink Menu</th>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
+            </tr>
+            
+            <% drinks.forEach(drink => { %>  
+                <tr class="menu-row">
+                    <td><%= drink.name %></td>
+                    <td class="price"><%= drink.price %></td>
+                    <td><input type="number" class="quantity" min="0" name="<%= drink.name %>"
+                        onkeydown="javascript: return event.keyCode === 8 ||
+                                    event.keyCode === 46 ? true : !isNaN(Number(event.key))"
+                        oninput="quantityChanged()"></td>
+                    <td class="each-menu-total-price">0.00</td>
                 </tr>
-                
-                <% drinks.forEach(drink => { %>  
-                    <tr class="menu-row">
-                        <td><%= drink.name %></td>
-                        <td class="price"><%= drink.price %></td>
-                        <td><input type="number" class="quantity" min="0" name="<%= drink.name %>"
-                            onkeydown="javascript: return event.keyCode === 8 ||
-                                event.keyCode === 46 ? true : !isNaN(Number(event.key))"
-                            oninput="quantityChanged()"></td>
-                        <td class="each-menu-total-price">0.00</td>
-                    </tr>
-                <% }) %>  
-                <tr>
-                    <th>TOTAL</th>
-                    <th></th>
-                    <th class="total-quantity">0</th>
-                    <th class="total-price">0.00</th>
-                </tr>  
-            </table>
-        </div>
-        <div>
-            <button type="reset" name="calcel-order-btn" id="calcel-order-btn">Cancel</button>
-            <button type="submit" name="confirm-order-btn" id="confirm-order-btn">Confirm</button>
-            <button type="button" name="check-bill-btn" id="check-bill-btn">Check Bill</button>
-        </div>
-    </form>
+            <% }) %>  
+            <tr>
+                <th>TOTAL</th>
+                <th></th>
+                <th class="total-quantity">0</th>
+                <th class="total-price">0.00</th>
+            </tr>  
+        </table>
+    </div>
+    <div>
+        <button type="reset" name="calcel-order-btn" id="calcel-order-btn">Cancel</button>
+        <button type="button" name="confirm-order-btn" id="confirm-order-btn">Confirm</button>
+        <button type="button" name="check-bill-btn" id="check-bill-btn">Check Bill</button>
+    </div>
 </div>
 <script>
     if(document.readyState == "loading"){
@@ -87,12 +85,12 @@
         updateTotalPrice()
     }
 
-    var listOfOrder = []
-    
+    var totalQuantity = 0
+    var totalPrice = 0
     function updateTotalPrice(){
+        var numberOfFood = 7
+        var menuType
         var menusRowElement = document.getElementsByClassName('menu-row')
-        var totalQuantity = 0
-        var totalPrice = 0
         for(var i = 0; i < menusRowElement.length; i++){
             var menusRow = menusRowElement[i]
             var quantityElement = menusRow.getElementsByClassName('quantity')[0]
@@ -104,24 +102,38 @@
             totalPrice += eachTotalPrice
             totalQuantity = parseFloat(totalQuantity) + (quantity * 1)
             
-            if(eachTotalPrice > 0){
-                listOfOrder.push({
-                    name: menuName,
-                    quantity: quantity,
-                })
-            }
+            menuType = i < numberOfFood ? 'food' : 'drink'
+
+            if(eachTotalPrice > 0)
+                updateDataToSend(menuType, menuName, quantity, eachTotalPrice)
         }
+
         document.getElementsByClassName('total-quantity')[0].innerHTML = totalQuantity
         document.getElementsByClassName('total-price')[0].innerHTML = totalPrice.toFixed(2)
     }
 
+    var listOfOrder = []
+    function updateDataToSend(type, name, quantity, eachTotalPrice){
+        listOfOrder.push({ 
+            type: type,
+            name: name,
+            quantity: quantity,
+            totalPrice: eachTotalPrice
+        })
+    }
+
     $(document).ready(function(){
-        console.log(listOfOrder[0])
-
+        var table_id = document.getElementById('table-id').innerText.split('Table ')[1]
+        
         $('#confirm-order-btn').click(function() {
-
+            const uniqueListOfOrder = Array.from(new Set(listOfOrder.map(order => order.name)))
+                                      .map(name => {
+                                          return listOfOrder.find(order => order.name === name)
+                                      })
             $.post(`/ordered-food/${table_id}/order`, {
-                listOfOrder: JSON.stringify(listOfOrder)
+                listOfOrder: uniqueListOfOrder,
+                totalPrice: totalPrice,
+                totalQuantity: totalQuantity
             })
         })
     })
