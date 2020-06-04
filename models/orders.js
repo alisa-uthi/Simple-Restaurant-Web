@@ -14,15 +14,13 @@ const orderSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Drink'
     },
-    totalQuantity: {
+    orderQuantity: {
         type: Number,
-        default: 0,
-        require: true
+        default: 0
     },
-    totalPrice: {
+    orderTotalPrice: {
         type: Number,
-        default: 0,
-        require: true
+        default: 0
     }
 })
 

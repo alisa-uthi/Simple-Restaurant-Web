@@ -135,9 +135,7 @@
                                           return listOfOrder.find(order => order.name === name)
                                       })
             $.post(`/ordered-food/${table_id}/order`, {
-                listOfOrder: uniqueListOfOrder,
-                totalPrice: getTotalPrice,
-                totalQuantity: getTotalQuantity
+                listOfOrder: uniqueListOfOrder
             })
         })
     })

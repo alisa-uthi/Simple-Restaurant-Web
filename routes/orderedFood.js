@@ -1,5 +1,7 @@
 const express = require('express')
 const route = express.Router()
+const mongoose = require('mongoose')
+
 const Table = require('../models/tables')
 const Food = require('../models/foods')
 const Drink = require('../models/drinks')
@@ -36,15 +38,48 @@ route.get('/:id', async (req, res) => {
 })
 
 route.post('/:id/order', async (req, res) => {
+
+    //Still cannot connect with other schema
     var list = req.body.listOfOrder
     try{
-        const table = await Table.find({ id: req.params.id })
-        const newOrder1 = new Order({
-            table: table._id,
-            totalQuantity: req.body.totalQuantity,
-            totalPrice: req.body.totalPrice
-        })
+        // const table = await Table.find({ id: req.params.id })
+        // const newOrder = new Order({
+        //     _id: new mongoose.Types.ObjectId(),
+        //     table: table._id
+        // })
   
+        // newOrder.save(err => {
+        //     if(err) console.log(err)
+        //     list.forEach(item => {
+        //         if(item.type == 'food'){
+        //             let menu = new Food({
+        //                 name: item.name,
+        //                 order: newOrder._id
+        //             })
+        //             menu.save(err => console.log(err + ' -----------'))
+        //         }else if(item.type == 'food'){
+        //             let menu = new Drink({
+        //                 name: item.name,
+        //                 order: newOrder._id
+        //             })
+        //             menu.save(err => console.log(err + ' >>>>>>>>>>>>>'))
+        //         }
+
+        //         console.log('quantity = ' + item.quantity)
+        //         console.log('price = ' + item.totalPrice)
+        //         Order.findByIdAndUpdate({ _id: newOrder._id }, {
+        //                 orderQuantity: item.quantity,
+        //                 orderTotalPrice: item.totalPrice
+        //             })
+        //     })
+        // })
+
+        // const getOrder = await Order.find()
+        //                             .populate({ path: 'Food', select: 'name' })
+        //                             .populate({ path: 'Drink', select: 'name' })
+        //                             .exec()
+        //     console.log(getOrder)
+
         // const food = new Food({
         //                 name: list[0].name,
         //                 price: list[0].price,
@@ -58,8 +93,8 @@ route.post('/:id/order', async (req, res) => {
         //     console.log(found.food + ' -----')
 
         ///////////////////////////////////////////////////////// DELETE
-        // Food.deleteMany({ orderQuantity: 2}, (err, result) => console.log(result))
-        // const found = await Food.find()
+        // Order.deleteMany({ orderQuantity: 0 }, (err, result) => console.log(result))
+        // const found = await Order.find()
         // console.log(found)
         /////////////////////////////////////////////////////////
 
