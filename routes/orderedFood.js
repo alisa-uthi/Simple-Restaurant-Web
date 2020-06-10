@@ -22,17 +22,12 @@ route.get('/:id', async (req, res) => {
         const foods = await Food.find({})
         const drinks = await Drink.find({})
         const tables = await Table.find({ id: req.params.id })
-        const orderTable = await Order.findOne({ table: tables[0]._id })
         let parameter = {
             occupiedTables: occupiedTables,
             foods: foods,
             drinks: drinks,
             tables: tables
         }
-        if(orderTable != null && orderTable != ''){
-            parameter.order = orderTable
-        }
-        //console.log(orderTable  + ' waaa')//////////////////////////////////////
         res.render('orderedFood/foodTable', parameter)
     }catch{
         res.send('failed')
@@ -80,12 +75,52 @@ route.post('/:id/order', async (req, res) => {
             upsert: true
         })
         
-        // const occupiedTables = await Table.find({ status: 'Occupied' })
-        // res.status(200).json({message: "ok ja"})
+        res.status(200).json({message: "ok ja"})
     }catch (e){
         console.log(e)
     }
 })
 
+route.get('/modify/:id', async (req, res) => {
+    const table_id = req.params.id
+    var includeFood = []
+    var includeDrink = []
+    try{
+        const table = await Table.findOne({ id: table_id })
+        const orderTable = await Order.findOne({ table: table._id })
+        if(orderTable.food.length > 0){
+            orderTable.food.forEach(item => {
+                includeFood.push(item.name)
+            })
+        }
+        if(orderTable.drink.length > 0){
+            orderTable.drink.forEach(item => {
+                includedrink.push(item.name)
+            })
+        }
+        const foodExcludeFromOrder = await Food.find({ name: {$nin: includeFood} })
+        const drinkExcludeFromOrder = await Drink.find({ name: {$nin: includeDrink} })
+
+        if(orderTable != null && orderTable != ''){
+            res.render('orderedFood/modifyOrder', {
+                id: table_id,
+                orderTable: orderTable,
+                food: foodExcludeFromOrder,
+                drink: drinkExcludeFromOrder
+            })
+        }
+    }catch{
+        res.send('Fail to get the modify order page')
+    }
+})
+
+route.post('/modify/:id', async (req, res) => {
+    const table_id = req.params.id
+    try{
+        //console.log(req.body)
+    }catch{
+        res.send('Fail to modify order')
+    }
+})
 
 module.exports = route

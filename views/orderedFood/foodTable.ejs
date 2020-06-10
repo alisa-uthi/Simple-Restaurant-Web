@@ -54,6 +54,7 @@
         <button type="button" name="check-bill-btn" id="check-bill-btn">Check Bill</button>
     </div>
 </div>
+
 <script>
     if(document.readyState == "loading"){
         document.addEventListener('DOMContentLoaded', quantityChanged)
@@ -139,15 +140,14 @@
                 totalQuantity: getTotalQuantity,
                 totalPrice: getTotalPrice
             }, (data, status) => {
-                window.location.replace(`http://localhost:8080/ordered-food`)
+                window.location.assign(`http://localhost:8080/book-table`)
             })
         })
 
         $('#check-bill-btn').click(function() {
             $.get(`/check-bill/${table_id}`, (data, status) => {
-                window.location.replace(`http://localhost:8080/check-bill/${table_id}`)
+                window.location.assign(`http://localhost:8080/book-table`)
             })
         })
-        
     })
 </script>

@@ -23,8 +23,8 @@ route.put('/change-table-status', async (req, res) => {
                                                  { new: true })
         }else if(table.status == 'Occupied'){
             table = await Table.findOneAndUpdate({ id: table_id }, 
-                { status: 'Available' },
-                { new: true })
+                                                 { status: 'Available' },
+                                                 { new: true })
         }
         getAllTable(res)
     }catch{

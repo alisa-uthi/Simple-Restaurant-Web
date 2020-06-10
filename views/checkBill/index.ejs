@@ -34,10 +34,13 @@
         var table_id = document.getElementById('table-id').innerText.split('Table ')[1]
 
         $('.pay-bill').click(function() {
-            console.log(table_id)
-            $.post(`/check-bill/${table_id}/clear-bill?_method=DELETE`, { id: table_id }, (data, status) => {
-                console.log('clear jaa')
+            $.post(`/check-bill/${table_id}/clear-bill?_method=DELETE`, { id: table_id }, (data, status) =>{
+            window.location.replace("http://localhost:8080/book-table")
+
             })
+        })
+        $('#back-btn').click(function(){
+            window.location.replace("http://localhost:8080/book-table")
         })
     })
 </script>

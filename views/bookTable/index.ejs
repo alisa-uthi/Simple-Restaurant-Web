@@ -5,13 +5,29 @@
             <h6 id="table<%= table.id %>">
                 Table <%= table.id %> | <%= table.seat %> seats | Status: <%= table.status %>
             </h6>
-            <button type="button" id="table<%= table.id %>" onclick="changeTableStatus(id)">Book</button>
+            <button type="button" id="book-table<%= table.id %>" onclick="changeTableStatus(id)">Book</button>
+            <% if(table.status == 'Occupied'){ %> 
+                <button type="button" id="modify-table<%= table.id %>" onclick="modifyOrder(id)">Modify</button>
+                <button type="button" id="bill-table<%= table.id %>" onclick="checkBill(id)">Check Bill</button>
+            <% } %> 
         <% }) %> 
 </div>
 <script> 
     function changeTableStatus(id){
         $.post('/book-table/change-table-status?_method=PUT', { table_id: id }, (data) => {
             window.location.reload()
+        })
+    }
+    function checkBill(id){
+        var table_id = id.split('table')[1]
+        $.get(`/check-bill/${table_id}`, (data, status) => {
+            window.location.assign(`http://localhost:8080/check-bill/${table_id}`)
+        })
+    }
+    function modifyOrder(id){
+        var table_id = id.split('table')[1]
+        $.get(`/ordered-food/modify/${table_id}`, (data, status) => {
+            window.location.assign(`http://localhost:8080/ordered-food/modify/${table_id}`)
         })
     }
 </script>

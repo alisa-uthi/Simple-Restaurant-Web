@@ -1,0 +1,121 @@
+<h4 id="table-id">Table <%= id %></h4>
+<div>
+    <!-- <form action= method="POST"> -->
+        <% orderTable.food.forEach(item => { %>
+            <div> 
+                <div class="ordered-menu-name"><%= item.name %></div>
+                <input type="number" name="quantity" id="quantity" 
+                value="<%= item.foodQuantity %>" min="0">
+                <button type="button" name="delete-from-list-btn" class="delete-from-list-btn">DELETE</button>
+            </div>  
+        <% }) %> 
+        <% orderTable.drink.forEach(item => { %>
+            <div> 
+                <div class="ordered-menu-name"><%= item.name %></div>
+                <input type="number" name="quantity" id="quantity" 
+                value="<%= item.drinkQuantity %>" min="0">
+                <button type="button" name="delete-from-list-btn" class="delete-from-list-btn">DELETE</button>
+            </div>  
+        <% }) %> 
+
+        <div class="append-menu"></div>
+        <button type="submit" id="submit-modify-order-btn" onclick="updateData()">Update</button>
+        <button type="button" id="cancel-modify-order-bth">Cancel</button>
+    <!-- </form> -->
+</div>
+
+<br>
+
+<div>
+    <div>Food</div>
+    <% food.forEach(item => { %>
+        <div>
+            <div class="menu-name"><%= item.name %></div>
+            <div class="menu-price"><%= item.price %></div>
+            <button type="button" class="add-menu" id="<% item.name %>" onclick="addMenu()">ADD</button>
+        </div>
+    <% }) %> 
+</div>
+<div>
+    <div>Drink</div>
+    <% drink.forEach(item => { %>
+        <div>   
+            <div class="menu-name"><%= item.name %></div>
+            <div class="menu-price"><%= item.price %></div> 
+            <button type="button" class="add-menu" id="<% item.name %>" onclick="addMenu()">ADD</button>
+        </div>
+    <% }) %> 
+</div>
+
+<script>
+    if(document.readyState == "loading"){
+        document.addEventListener('DOMContentLoaded', addMenu())
+    }else{
+        addMenu()
+    }
+
+    function addMenu(){
+        var menuElements = document.getElementsByClassName('add-menu')
+        menuElements.addEventListener('click', addMenuIntoList(event))
+    }
+
+    function addMenuIntoList(event){
+        let input = event.target
+        let rowElement = input.parentElement
+        let menuName = rowElement.getElementsByClassName('menu-name')[0].innerText
+        // let menuPrice = rowElement.getElementByClassName('menu-price')[0].innerText
+        let allMenuRowElements = input.parentElement.parentElement
+        let allMenuRows = document.getElementsByClassName('ordered-menu-name')
+        for(let i = 0; i < allMenuRows.length; i++){
+            if(menuName == allMenuRows[i].innerText) return
+        }
+
+        let newOrderMenu = `<div><div class="ordered-menu-name">${menuName}</div>`
+        // newOrderMenu +=  `<div class="menu-price">${menuPrice}</div>`
+        newOrderMenu += `<input type="number" name="quantity" id="quantity" min="1" value="1"
+                     onkeydown="javascript: return event.keyCode === 8 ||
+                     event.keyCode === 46 ? true : !isNaN(Number(event.key))">`
+        newOrderMenu += '<button type="button" name="delete-from-list-btn" class="delete-from-list-btn"' +
+                        'onclick="deleteItemFromList()">DELETE</button></div>'
+        $('.append-menu').append(newOrderMenu)
+    }
+
+    function deleteItemFromList(){
+        var deleteItemButton = document.getElementsByClassName('delete-from-list-btn')
+        for(let i = 0; i < deleteItemButton.length; i++){
+            var button = deleteItemButton[i]
+            button.addEventListener('click', removeItemFromList)
+        }
+    }
+
+    function removeItemFromList(event){
+        var buttonClicked = event.target
+        buttonClicked.parentElement.remove()
+    }
+
+    function updateData(){
+        var order = []
+        var orderNameElements = document.getElementsByClassName('ordered-menu-name')
+        var orderQuantityElements = document.getElementsByClassName('quantity')
+        if(orderNameElements.length != orderQuantityElements.length) return
+        for(var i = 0; i < orderNameElements.length; i++){
+            var menu = {
+                type: 'food',  ////////
+                name: orderNameElements[i],
+                quantity: orderQuantityElements[i]
+            }
+            order.push(menu)
+        }
+    }
+
+    // $(document).ready(function(){
+    //     var table_id = document.getElementById('table-id').innerText.split('Table ')[1]
+    //     console.log(table_id)
+    //     $('#submit-modify-order-btn').click(function(){
+    //         console.log('say sth')
+    //         $.post(`/ordered-food/modify/${table_id}`, {
+
+    //         })
+    //     })
+    // })
+</script>
