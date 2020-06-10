@@ -22,7 +22,6 @@ const foodSchema = mongoose.Schema({
         default: 0
     }
 })
-
 const Food = mongoose.model('Food', foodSchema)
 
 const drinkSchema = mongoose.Schema({
@@ -47,7 +46,6 @@ const drinkSchema = mongoose.Schema({
         default: 0
     }
 })
-
 const Drink = mongoose.model('Drink', drinkSchema)
 
 const orderSchema = mongoose.Schema({
@@ -57,9 +55,16 @@ const orderSchema = mongoose.Schema({
         require: true
     },
     food: [foodSchema],
-    drink: [drinkSchema]
+    drink: [drinkSchema],
+    totalQuantity: {
+        type: Number,
+        default: 0
+    },
+    totalPrice: {
+        type: Number,
+        default: 0
+    }
 })
-
 const Order = mongoose.model('Order', orderSchema)
 
 module.exports = {

@@ -7,6 +7,7 @@ const expressLayout = require('express-ejs-layouts')
 
 const bookTableRouter = require('./routes/bookTable')
 const orderedFoodRouter = require('./routes/orderedFood')
+const checkBillRouter = require('./routes/checkBill')
 
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
@@ -28,6 +29,7 @@ db.once('open', () => console.log('Connected to Mongoose'))
 
 app.use('/book-table', bookTableRouter)
 app.use('/ordered-food', orderedFoodRouter)
+app.use('/check-bill', checkBillRouter)
 
 app.listen(process.env.PORT || 8080, () => {
     console.log('Server is starting')

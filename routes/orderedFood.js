@@ -22,12 +22,18 @@ route.get('/:id', async (req, res) => {
         const foods = await Food.find({})
         const drinks = await Drink.find({})
         const tables = await Table.find({ id: req.params.id })
-        res.render('orderedFood/foodTable', {
+        const orderTable = await Order.findOne({ table: tables[0]._id })
+        let parameter = {
             occupiedTables: occupiedTables,
             foods: foods,
             drinks: drinks,
             tables: tables
-        })
+        }
+        if(orderTable != null && orderTable != ''){
+            parameter.order = orderTable
+        }
+        //console.log(orderTable  + ' waaa')//////////////////////////////////////
+        res.render('orderedFood/foodTable', parameter)
     }catch{
         res.send('failed')
     }
@@ -38,7 +44,9 @@ route.post('/:id/order', async (req, res) => {
     try{
         const table = await Table.find({ id: req.params.id })
         const newOrder = new Order({
-            table: table[0]._id
+            table: table[0]._id, 
+            totalPrice: req.body.totalPrice,
+            totalQuantity: req.body.totalQuantity
         })
         
         var foods = []
@@ -64,16 +72,20 @@ route.post('/:id/order', async (req, res) => {
         })
 
         await newOrder.save()
-        await Order.update({ _id: newOrder._id },{
+        await Order.updateOne({ _id: newOrder._id },{
             $set: {
                 food: foods,
                 drink: drinks
             },
             upsert: true
         })
+        
+        // const occupiedTables = await Table.find({ status: 'Occupied' })
+        // res.status(200).json({message: "ok ja"})
     }catch (e){
         console.log(e)
     }
 })
+
 
 module.exports = route

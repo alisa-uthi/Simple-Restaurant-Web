@@ -1,0 +1,43 @@
+<h4 id="table-id">Table <%= id %></h4>
+<% orderTable.food.forEach(item => { %>
+    <div> 
+        <%= item.foodQuantity %> <%= item.name %>
+        <%= item.foodTotalPrice %>   
+    </div>  
+<% }) %> 
+<% orderTable.drink.forEach(item => { %>
+    <div> 
+        <%= item.drinkQuantity %> <%= item.name %>
+        <%= item.drinkTotalPrice %>   
+    </div>  
+<% }) %> 
+<br>
+<div>Total Quantity: <%= orderTable.totalQuantity %></div>
+<div>Total Price: <%= orderTable.totalPrice %></div>
+
+<br>
+<div>
+    <button type="button" id="cash-btn" class="pay-bill">Cash</button>
+</div>
+<div>
+    <button type="button" id="credit-card-btn" class="pay-bill">Credit Card</button>
+</div>
+<div>
+    <button type="button" id="PayPal-btn" class="pay-bill">PayPal</button>
+</div>
+<div>
+    <button type="button" id="back-btn" class="pay-bill">Back</button>
+</div>
+
+<script>
+    $(document).ready(function() {
+        var table_id = document.getElementById('table-id').innerText.split('Table ')[1]
+
+        $('.pay-bill').click(function() {
+            console.log(table_id)
+            $.post(`/check-bill/${table_id}/clear-bill?_method=DELETE`, { id: table_id }, (data, status) => {
+                console.log('clear jaa')
+            })
+        })
+    })
+</script>
