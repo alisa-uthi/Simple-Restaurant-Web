@@ -12,6 +12,14 @@ const foodSchema = mongoose.Schema({
     order: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
+    },
+    foodQuantity: {
+        type: Number,
+        default: 0
+    },
+    foodTotalPrice: {
+        type: Number,
+        default: 0
     }
 })
 

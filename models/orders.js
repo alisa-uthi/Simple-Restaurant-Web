@@ -6,22 +6,14 @@ const orderSchema = mongoose.Schema({
         ref: 'Table',
         require: true
     },
-    food: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Food'
-    },
-    drink: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Drink'
-    },
-    orderQuantity: {
-        type: Number,
-        default: 0
-    },
-    orderTotalPrice: {
-        type: Number,
-        default: 0
-    }
+    food: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Food' 
+    }],
+    drink: [{ 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Drink' 
+    }]
 })
 
 module.exports = mongoose.model('Order', orderSchema)

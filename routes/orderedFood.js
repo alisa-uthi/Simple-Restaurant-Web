@@ -39,120 +39,71 @@ route.get('/:id', async (req, res) => {
 
 route.post('/:id/order', async (req, res) => {
 
-    //Still cannot connect with other schema
     var list = req.body.listOfOrder
     try{
-        // const table = await Table.find({ id: req.params.id })
-        // const newOrder = new Order({
-        //     _id: new mongoose.Types.ObjectId(),
-        //     table: table._id
-        // })
-  
-        // newOrder.save(err => {
-        //     if(err) console.log(err)
-        //     list.forEach(item => {
-        //         if(item.type == 'food'){
-        //             let menu = new Food({
-        //                 name: item.name,
-        //                 order: newOrder._id
-        //             })
-        //             menu.save(err => console.log(err + ' -----------'))
-        //         }else if(item.type == 'food'){
-        //             let menu = new Drink({
-        //                 name: item.name,
-        //                 order: newOrder._id
-        //             })
-        //             menu.save(err => console.log(err + ' >>>>>>>>>>>>>'))
-        //         }
+        const table = await Table.find({ id: req.params.id })
+        const newOrder = new Order({
+            table: table[0]._id
+        })
+        
+        var foods = []
+        var drinks = []
+        list.forEach(item => {
+            if(item.type == 'food'){
+                // let individualFood = Food.findOne({ name : item.name })
+                //                                .select('_id')
+                //                                .exec()
+                //                                .then(docs => {
+                //                                     food = {
+                //                                         _id: docs._id,
+                //                                         name: item.name,
+                //                                         price: item.price,
+                //                                         foodQuantity: item.quantity,
+                //                                         foodTotalPrice: item.totalPrice
+                //                                     }
+                //                                     foods.push(food)
+                //                                })
+                food = {
+                    name: item.name,
+                    price: item.price,
+                    foodQuantity: item.quantity,
+                    foodTotalPrice: item.totalPrice
+                }
+                foods.push(food)
+            }else if(item.type == 'drink'){
+                // let individualDrink = Drink.findOne({ name : item.name })
+                //                                .select('_id')
+                //                                .exec()
+                //                                .then(docs => {
+                //                                     drink = {
+                //                                         _id: docs._id,
+                //                                         name: item.name,
+                //                                         price: item.price,
+                //                                         drinkQuantity: item.quantity,
+                //                                         drinkTotalPrice: item.totalPrice
+                //                                     }
+                //                                     drinks.push(drink)
+                //                                })
+                drink = {
+                    name: item.name,
+                    price: item.price,
+                    drinkQuantity: item.quantity,
+                    drinkTotalPrice: item.totalPrice
+                }
+                drinks.push(drink)
+            }
+        })
 
-        //         console.log('quantity = ' + item.quantity)
-        //         console.log('price = ' + item.totalPrice)
-        //         Order.findByIdAndUpdate({ _id: newOrder._id }, {
-        //                 orderQuantity: item.quantity,
-        //                 orderTotalPrice: item.totalPrice
-        //             })
-        //     })
-        // })
+        const order = await newOrder.save()
+        await order.update({ _id: newOrder._id },{
+            $set: {
+                food: foods,
+                drink: drinks
+            }
+        })
 
-        // const getOrder = await Order.find()
-        //                             .populate({ path: 'Food', select: 'name' })
-        //                             .populate({ path: 'Drink', select: 'name' })
-        //                             .exec()
-        //     console.log(getOrder)
-
-        // const food = new Food({
-        //                 name: list[0].name,
-        //                 price: list[0].price,
-        //                 orderQuantity: list[0].quantity,
-        //                 orderTotalPrice: list[0].totalPrice
-        //                 //order: newOrder1._id
-        //             })
-        //     newOrder1.food = food._id
-        //     await newOrder1.save()
-        //     const found = await Order.findOne({ totalPrice: 600 }).populate('Food').exec()
-        //     console.log(found.food + ' -----')
-
-        ///////////////////////////////////////////////////////// DELETE
-        // Order.deleteMany({ orderQuantity: 0 }, (err, result) => console.log(result))
-        // const found = await Order.find()
-        // console.log(found)
-        /////////////////////////////////////////////////////////
-
-        // await newOrder1.save((err) => {
-        //     if(err) throw err
-            // list.forEach(item => {
-                //if(item.type == 'food'){
-                    // const food = new Food({
-                    //     name: list[0].name,
-                    //     price: list[0].price,
-                    //     orderQuantity: list[0].quantity,
-                    //     orderTotalPrice: list[0].totalPrice,
-                    //     order: newOrder1._id
-                    // })
-                    // food.save()
-                //}
-                // }else if(item.type == 'drink'){
-                //     drink = new Drink({
-                //         name: item.name,
-                //         price: item.price,
-                //         orderQuantity: item.quantity,
-                //         orderTotalPrice: item.totalPrice,
-                //         order: newOrder1._id
-                //     })
-                //     drink.save()
-                // }
-           // })
-        // })
-
-        // await Order.
-        //     find().
-        //     populate('Food').
-        //     exec(function (err, order) {
-        //         if (err) return handleError(err);
-        //         console.log('food for this order '+ order.food);
-        //     });
-
-
-        //     list.forEach(item => {
-        //     if(item.type == 'food'){
-        //         food = {
-        //             name: item.name,
-        //             price: item.price,
-        //             orderQuantity: item.quantity,
-        //             orderTotalPrice: item.totalPrice
-        //         }
-        //         newOrder1.updateOne({ table: table._id }, { $push: { food: food } } ).then(() => console.log(newOrder1))
-        //     }else if(item.type == 'drink'){
-        //         drink = {
-        //             name: item.name,
-        //             price: item.price,
-        //             orderQuantity: item.quantity,
-        //             orderTotalPrice: item.totalPrice
-        //         }
-        //         newOrder1.updateOne({ table: table._id }, { $push: { drink: drink } } )
-        //     }
-        // })
-
+        // const foundOrder = await Order.findOne({ _id: newOrder._id, table: table[0]._id})
+        // console.log(foundOrder) 
     }catch (e){
         console.log(e)
     }
