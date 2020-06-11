@@ -119,7 +119,6 @@ route.get('/modify/:id', async (req, res) => {
 
 route.patch('/modify/:id', async (req, res) => {
     var list = req.body.listOfOrder
-    console.log(list)
     try{
         const table = await Table.find({ id: req.params.id }) 
         var foods = []

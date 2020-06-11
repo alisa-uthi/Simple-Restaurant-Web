@@ -67,7 +67,6 @@
         var menuElements = document.getElementsByClassName('add-menu')
         menuElements.addEventListener('click', addMenuIntoList(event))
     }
-
     
     function addMenuIntoList(event){
         let input = event.target
@@ -77,6 +76,8 @@
         let menuPrice = rowElement.getElementsByClassName('menu-price')[0].innerText
         let allMenuRowElements = input.parentElement
         let allMenuRows = document.getElementsByClassName('ordered-menu-name')
+
+        // If user has already ordered this menu 
         for(let i = 0; i < allMenuRows.length; i++){
             if(menuName == allMenuRows[i].innerText) return
         }
@@ -188,7 +189,6 @@
                 window.location.assign(`http://localhost:8080/book-table`)
             })
         })
-
         $('#cancel-modify-order-bth').click(function(){
             window.location.assign(`http://localhost:8080/book-table`)
         })

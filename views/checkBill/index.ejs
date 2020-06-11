@@ -1,4 +1,6 @@
-<h4 id="table-id">Table <%= id %></h4>
+<div class="header">
+    <h4 id="table-id">Table <%= id %></h4>
+</div>
 <% orderTable.food.forEach(item => { %>
     <div> 
         <%= item.foodQuantity %> <%= item.name %>
@@ -16,27 +18,28 @@
 <div>Total Price: <%= orderTable.totalPrice %></div>
 
 <br>
-<div>
+
+<div class="cash-btn">
     <button type="button" id="cash-btn" class="pay-bill">Cash</button>
 </div>
-<div>
+<div class="credit-card-btn">
     <button type="button" id="credit-card-btn" class="pay-bill">Credit Card</button>
 </div>
-<div>
+<div class="PayPal-btn">
     <button type="button" id="PayPal-btn" class="pay-bill">PayPal</button>
 </div>
-<div>
+<div class="back-btn">
     <button type="button" id="back-btn">Back</button>
 </div>
 
 <script>
     $(document).ready(function() {
         var table_id = document.getElementById('table-id').innerText.split('Table ')[1]
-
         $('.pay-bill').click(function() {
-            $.post(`/check-bill/${table_id}/clear-bill?_method=DELETE`, { id: table_id }, (data, status) =>{
-            window.location.replace("http://localhost:8080/book-table")
-
+            $.post(`/check-bill/${table_id}/clear-bill?_method=DELETE`, 
+                { id: table_id }, 
+                (data, status) => {
+                    window.location.replace("http://localhost:8080/book-table")
             })
         })
         $('#back-btn').click(function(){

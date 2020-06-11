@@ -1,26 +1,26 @@
 <h2>BOOKING TABLE</h2>
 <div>
-    <h4>Number of people</h4>
-        <% tables.forEach(table => { %> 
-            <h6 id="table<%= table.id %>">
-                Table <%= table.id %> | <%= table.seat %> seats | Status: <%= table.status %>
-            </h6>
-            <% if(table.status == 'Available'){ %> 
-                <button type="button" id="book-table<%= table.id %>"
-                        class="book-table" onclick="changeTableStatus(id)">Book</button>
-            <% } %> 
+    <% tables.forEach(table => { %> 
+        <h6 id="table<%= table.id %>">
+            Table <%= table.id %> | <%= table.seat %> seats | Status: <%= table.status %>
+        </h6>
 
-            <% if(table.status == 'Occupied'){ %> 
-                <% if(table.orderStatus == 'Empty'){ %> 
-                    <button type="button" id="book-table<%= table.id %>"
+        <% if(table.status == 'Available'){ %> 
+            <button type="button" id="book-table<%= table.id %>"
+                    class="book-table" onclick="changeTableStatus(id)">Book</button>
+        <% } %> 
+
+        <% if(table.status == 'Occupied'){ %> 
+            <% if(table.orderStatus == 'Empty'){ %> 
+                <button type="button" id="book-table<%= table.id %>"
                         class="book-table" onclick="changeTableStatus(id)">Unbook</button>
-                    <button type="button" id="order-table<%= table.id %>" onclick="order(id)">Order</button>
-                <% }else if(table.orderStatus == 'Ordered'){ %>
-                    <button type="button" id="modify-table<%= table.id %>" onclick="modifyOrder(id)">Modify</button>
-                    <button type="button" id="bill-table<%= table.id %>" onclick="checkBill(id)">Check Bill</button>
-                <% } %> 
+                <button type="button" id="order-table<%= table.id %>" onclick="order(id)">Order</button>
+            <% }else if(table.orderStatus == 'Ordered'){ %>
+                <button type="button" id="modify-table<%= table.id %>" onclick="modifyOrder(id)">Modify</button>
+                <button type="button" id="bill-table<%= table.id %>" onclick="checkBill(id)">Check Bill</button>
             <% } %> 
-        <% }) %> 
+        <% } %> 
+    <% }) %> 
 </div>
 <script> 
     function changeTableStatus(id){

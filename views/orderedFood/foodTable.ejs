@@ -1,6 +1,6 @@
 <%- include('./index') %> 
 <div>
-    <div>
+    <div class="header">
         <h5 id="table-id">Table <%= tables[0].id %></h5>
     </div>
     <div>
@@ -51,7 +51,6 @@
     <div>
         <button type="reset" name="calcel-order-btn" id="calcel-order-btn">Cancel</button>
         <button type="button" name="confirm-order-btn" id="confirm-order-btn">Confirm</button>
-        <button type="button" name="check-bill-btn" id="check-bill-btn">Check Bill</button>
     </div>
 </div>
 
@@ -64,10 +63,10 @@
 
     function quantityChanged(){
         var quantityElements = document.getElementsByClassName('quantity')
-        quantityElements.addEventListener('change', calculateEachMenuPrice(event))
+        quantityElements.addEventListener('change', getEachMenuPriceElement(event))
     }
 
-    function calculateEachMenuPrice(event){
+    function getEachMenuPriceElement(event){
         var input = event.target
         if(isNaN(input.value)){
             input.value = 0
@@ -92,8 +91,9 @@
         var totalQuantity = 0
         var totalPrice = 0
         var numberOfFood = 7
-        var menuType
+        var menuType = ''
         var menusRowElement = document.getElementsByClassName('menu-row')
+
         for(var i = 0; i < menusRowElement.length; i++){
             var menusRow = menusRowElement[i]
             var quantityElement = menusRow.getElementsByClassName('quantity')[0]
@@ -110,6 +110,7 @@
             if(eachTotalPrice > 0)
                 updateDataToSend(menuType, menuName, unitPrice, quantity, eachTotalPrice)
         }
+        
         getTotalPrice = totalPrice
         getTotalQuantity = totalQuantity
         document.getElementsByClassName('total-quantity')[0].innerHTML = totalQuantity
@@ -140,12 +141,6 @@
                 totalQuantity: getTotalQuantity,
                 totalPrice: getTotalPrice
             }, (data, status) => {
-                window.location.assign(`http://localhost:8080/book-table`)
-            })
-        })
-
-        $('#check-bill-btn').click(function() {
-            $.get(`/check-bill/${table_id}`, (data, status) => {
                 window.location.assign(`http://localhost:8080/book-table`)
             })
         })
