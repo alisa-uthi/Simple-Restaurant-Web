@@ -28,7 +28,7 @@ route.get('/:id', async (req, res) => {
             drinks: drinks,
             tables: tables
         }
-        res.render('orderedFood/foodTable', parameter)
+        res.status(200).render('orderedFood/foodTable', parameter)
     }catch{
         res.send('failed')
     }
@@ -38,6 +38,9 @@ route.post('/:id/order', async (req, res) => {
     var list = req.body.listOfOrder
     try{
         const table = await Table.find({ id: req.params.id })
+        await Table.updateOne({ id: req.params.id}, {
+            $set: { orderStatus: 'Ordered'}
+        })
         const newOrder = new Order({
             table: table[0]._id, 
             totalPrice: req.body.totalPrice,
@@ -95,7 +98,7 @@ route.get('/modify/:id', async (req, res) => {
         }
         if(orderTable.drink.length > 0){
             orderTable.drink.forEach(item => {
-                includedrink.push(item.name)
+                includeDrink.push(item.name)
             })
         }
         const foodExcludeFromOrder = await Food.find({ name: {$nin: includeFood} })

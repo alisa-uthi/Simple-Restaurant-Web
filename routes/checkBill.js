@@ -31,7 +31,8 @@ route.delete('/:id/clear-bill', async (req, res) => {
         if(orderTable != null && orderTable != ''){
             await orderTable.remove()
             await Table.updateOne({ id: table_id }, {
-                $set:{ status: 'Available' }
+                $set:{ status: 'Available',
+                       orderStatus: 'Empty' }
             })
             return res.json({message: 'This order has been removed successfully'})
         }

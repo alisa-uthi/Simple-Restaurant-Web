@@ -17,6 +17,10 @@ const tableSchema = mongoose.Schema({
     order: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
+    },
+    orderStatus: {
+        type: String,
+        default: 'Empty'
     }
 })
 
