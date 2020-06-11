@@ -117,12 +117,44 @@ route.get('/modify/:id', async (req, res) => {
     }
 })
 
-route.post('/modify/:id', async (req, res) => {
-    const table_id = req.params.id
+route.patch('/modify/:id', async (req, res) => {
+    var list = req.body.listOfOrder
+    console.log(list)
     try{
-        //console.log(req.body)
-    }catch{
-        res.send('Fail to modify order')
+        const table = await Table.find({ id: req.params.id }) 
+        var foods = []
+        var drinks = []
+        list.forEach(item => {
+            if(item.type == 'food'){
+                food = {
+                    name: item.name,
+                    price: item.price,
+                    foodQuantity: item.quantity,
+                    foodTotalPrice: item.totalPrice
+                }
+                foods.push(food)
+            }else if(item.type == 'drink'){
+                drink = {
+                    name: item.name,
+                    price: item.price,
+                    drinkQuantity: item.quantity,
+                    drinkTotalPrice: item.totalPrice
+                }
+                drinks.push(drink)
+            }
+        })
+        await Order.updateOne({ table: table[0]._id },{
+            $set: {
+                food: foods,
+                drink: drinks,
+                totalPrice: req.body.totalPrice,
+                totalQuantity: req.body.totalQuantity
+            },
+            upsert: true
+        })
+        res.status(200).json({message: "ok ja"})
+    }catch (e){
+        console.log(e)
     }
 })
 

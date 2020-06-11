@@ -1,53 +1,57 @@
 <h4 id="table-id">Table <%= id %></h4>
 <div>
-    <% orderTable.food.forEach(item => { %>
-        <div class="ordered-menu"> 
-            <div class="ordered-menu-name"><%= item.name %></div>
-            <div class="ordered-menu-price"><%= item.price %>.00</div>
-            <input type="number" class="menu-quantity" name="<%= item.name %> " 
-            value="<%= item.foodQuantity %>" min="0" oninput="quantityChanged()">
-            <div class="each-menu-total-price"><%= item.foodTotalPrice %>.00</div>
-            <button type="button" name="delete-from-list-btn" class="delete-from-list-btn">DELETE</button>
-        </div>  
-        <br>
-    <% }) %> 
-    <% orderTable.drink.forEach(item => { %>
-        <div class="ordered-menu"> 
-            <div class="ordered-menu-name"><%= item.name %></div>
-            <div class="ordered-menu-price"><%= item.price %>.00</div>
-            <input type="number" class="menu-quantity" name="<%= item.name %> " 
-            value="<%= item.drinkQuantity %>" min="0" oninput="quantityChanged()">
-            <div class="each-menu-total-price"><%= item.drinkTotalPrice %>.00</div>
-            <button type="button" name="delete-from-list-btn" class="delete-from-list-btn">DELETE</button>
-        </div>  
-        <br>
-    <% }) %> 
+    <div class="type-food">
+        <% orderTable.food.forEach(item => { %>
+            <div class="ordered-menu"> 
+                <div class="ordered-menu-name"><%= item.name %></div>
+                <div class="ordered-menu-price"><%= item.price %>.00</div>
+                <input type="number" class="menu-quantity" name="<%= item.name %> " 
+                value="<%= item.foodQuantity %>" min="0" oninput="quantityChanged()">
+                <div class="each-menu-total-price"><%= item.foodTotalPrice %>.00</div>
+                <button type="button" name="delete-from-list-btn" class="delete-from-list-btn">DELETE</button>
+            </div>  
+            <br>
+        <% }) %> 
+    </div>
+    <div class="type-drink">
+        <% orderTable.drink.forEach(item => { %>
+            <div class="ordered-menu"> 
+                <div class="ordered-menu-name"><%= item.name %></div>
+                <div class="ordered-menu-price"><%= item.price %>.00</div>
+                <input type="number" class="menu-quantity" name="<%= item.name %> " 
+                value="<%= item.drinkQuantity %>" min="0" oninput="quantityChanged()">
+                <div class="each-menu-total-price"><%= item.drinkTotalPrice %>.00</div>
+                <button type="button" name="delete-from-list-btn" class="delete-from-list-btn">DELETE</button>
+            </div>  
+            <br>
+        <% }) %> 
+    </div>
     <div class="append-menu"></div>
     <div class="total-quantity"><%= orderTable.totalQuantity %></div>
     <div class="total-price"><%= orderTable.totalPrice %>.00</div>
-    <button type="submit" id="submit-modify-order-btn" onclick="updateDataToSend()">Update</button>
+    <button type="submit" id="submit-modify-order-btn">Update</button>
     <button type="button" id="cancel-modify-order-bth">Cancel</button>
 </div>
 
 <br>
 
-<div>
+<div class="type-food">
     <h5>Food</h5>
     <% food.forEach(item => { %>
         <div>
             <div class="menu-name"><%= item.name %></div>
             <div class="menu-price"><%= item.price %>.00</div>
-            <button type="button" class="add-menu" onclick="addMenu(); quantityChanged();">ADD</button>
+            <button type="button" class="add-menu" onclick="addMenu()">ADD</button>
         </div>
     <% }) %> 
 </div>
-<div>
+<div class="type-drink">
     <h5>Drink</h5>
     <% drink.forEach(item => { %>
         <div>   
             <div class="menu-name"><%= item.name %></div>
-            <div class="menu-price"><%= item.price %>,00</div> 
-            <button type="button" class="add-menu" onclick="addMenu(); quantityChanged();">ADD</button>
+            <div class="menu-price"><%= item.price %>.00</div> 
+            <button type="button" class="add-menu" onclick="addMenu()">ADD</button>
         </div>
     <% }) %> 
 </div>
@@ -68,6 +72,7 @@
     function addMenuIntoList(event){
         let input = event.target
         let rowElement = input.parentElement
+        let menuType = rowElement.parentElement.getAttribute('class').split('type-')[1]
         let menuName = rowElement.getElementsByClassName('menu-name')[0].innerText
         let menuPrice = rowElement.getElementsByClassName('menu-price')[0].innerText
         let allMenuRowElements = input.parentElement
@@ -76,18 +81,21 @@
             if(menuName == allMenuRows[i].innerText) return
         }
 
-        let newOrderMenu = `<div class="ordered-menu">
-                                <div class="ordered-menu-name">${menuName}</div>
-                                <div class="ordered-menu-price">${menuPrice}</div>
-                                <input type="number" class="menu-quantity" name="${menuName}" min="1" value="1"
-                                            onkeydown="javascript: return event.keyCode === 8 ||
-                                            event.keyCode === 46 ? true : !isNaN(Number(event.key))" 
-                                            oninput="quantityChanged()">
-                                <div class="each-menu-total-price"> 0.00 </div>
-                                <button type="button" name="delete-from-list-btn" class="delete-from-list-btn"
-                                        onclick="deleteItemFromList()">DELETE</button>
+        let newOrderMenu = `<div class="type-${menuType}">
+                                <div class="ordered-menu">
+                                    <div class="ordered-menu-name">${menuName}</div>
+                                    <div class="ordered-menu-price">${menuPrice}</div>
+                                    <input type="number" class="menu-quantity" name="${menuName}" min="1" value="1"
+                                                onkeydown="javascript: return event.keyCode === 8 ||
+                                                event.keyCode === 46 ? true : !isNaN(Number(event.key))" 
+                                                oninput="quantityChanged()">
+                                    <div class="each-menu-total-price"> ${menuPrice} </div>
+                                    <button type="button" name="delete-from-list-btn" class="delete-from-list-btn"
+                                            onclick="deleteItemFromList()">DELETE</button>
+                                </div>
                             </div>`
         $('.append-menu').append(newOrderMenu)
+        updateTotalPrice()
     }
 
 
@@ -122,9 +130,11 @@
         var totalPrice = 0
         var numberOfFood = 7
         var menuType
+        var listOfOrders = []
         var menusRowElement = document.getElementsByClassName('ordered-menu')
         for(var i = 0; i < menusRowElement.length; i++){
             var menusRow = menusRowElement[i]
+            var menuType = menusRow.parentElement.getAttribute('class').split('type-')[1]
             var quantityElement = menusRow.getElementsByClassName('menu-quantity')[0]
             var quantity = quantityElement.value
             var menuName = quantityElement.getAttribute('name')
@@ -133,28 +143,22 @@
             var eachTotalPrice = unitPrice * quantity
             totalPrice += eachTotalPrice
             totalQuantity = parseFloat(totalQuantity) + (quantity * 1)
-            
-            //menuType = i < numberOfFood ? 'food' : 'drink'
 
-            // if(eachTotalPrice > 0)
-            //     updateDataToSend(menuType, menuName, unitPrice, quantity, eachTotalPrice)
+            if(eachTotalPrice > 0){
+                listOfOrders.push({
+                    type: menuType,
+                    name: menuName,
+                    price: unitPrice,
+                    quantity: quantity,
+                    totalPrice: eachTotalPrice
+                })
+            }
         }
         getTotalPrice = totalPrice
         getTotalQuantity = totalQuantity
         document.getElementsByClassName('total-quantity')[0].innerText = totalQuantity
         document.getElementsByClassName('total-price')[0].innerText = totalPrice.toFixed(2)
-    }
-
-    var listOfOrder = []
-    function updateDataToSend(type, name, unitPrice, quantity, eachTotalPrice){
-        listOfOrder.push({ 
-            type: 'food',
-            name: name,
-            price: unitPrice,
-            quantity: quantity,
-            totalPrice: eachTotalPrice
-        })
-        console.log(listOfOrder + ' ===')
+        return listOfOrders
     }
 
     function deleteItemFromList(){
@@ -168,31 +172,25 @@
     function removeItemFromList(event){
         var buttonClicked = event.target
         buttonClicked.parentElement.remove()
+        updateTotalPrice()
     }
+</script>
+<script>
+    $(document).ready(function(){
+        var table_id = document.getElementById('table-id').innerText.split('Table ')[1]
+        $('#submit-modify-order-btn').click(function(){
+            let list = updateTotalPrice()
+            $.post(`/ordered-food/modify/${table_id}?_method=PATCH`, {
+                listOfOrder: list,
+                totalQuantity: getTotalQuantity,
+                totalPrice: getTotalPrice
+            }, (data, status) => {
+                window.location.assign(`http://localhost:8080/book-table`)
+            })
+        })
 
-    // function updateData(){
-    //     var order = []
-    //     var orderElements = document.getElementsByClassName('ordered-menu')
-    //     for(var i = 0; i < orderElements.length; i++){
-    //         var menuName = orderElements.getElementsByClassName('ordered-menu-name')[i].innerText
-    //         var menuQuantity = orderElements.getElementsByClassName('menu-quantity')[i].value
-    //         var menu = {
-    //             name: menuName,
-    //             quantity: menuQuantity
-    //         }
-    //         order.push(menu)
-    //     }
-    //     console.log(order + ' -aaaaa')
-    // }
-
-    // $(document).ready(function(){
-    //     var table_id = document.getElementById('table-id').innerText.split('Table ')[1]
-    //     console.log(table_id)
-    //     $('#submit-modify-order-btn').click(function(){
-    //         console.log('say sth')
-    //         $.post(`/ordered-food/modify/${table_id}`, {
-
-    //         })
-    //     })
-    // })
+        $('#cancel-modify-order-bth').click(function(){
+            window.location.assign(`http://localhost:8080/book-table`)
+        })
+    })
 </script>
